@@ -26,7 +26,7 @@
     </div>
     <a href="#" class="w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
     <a href="/graph" class="w3-padding"><i class="fa fa-search fa-fw"></i>  Suchen</a>
-    <a href="/upload" class="w3-padding w3-blue"><i class="fa fa-upload fa-fw"></i>  Upload</a>
+    <a href="/upload" class="w3-padding"><i class="fa fa-upload fa-fw"></i>  Upload</a>
     <a href="/import" class="w3-padding"><i class="fa fa-files-o fa-fw"></i>  Import</a>
     <a href="/delete" class="w3-padding"><i class="fa fa-trash fa-fw"></i>  Löschen</a>
 </nav>
@@ -38,31 +38,19 @@
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:300px;margin-top:78px;">
 
-    <div class="w3-container" style="padding-top:22px">
-        <h5>Input</h5>
-        <form method="post" action="http://localhost:8080/upload" enctype="multipart/form-data">
-            <label>Wählen Sie eine PDF-Datei (*.pdf) von Ihrem Rechner aus.
-                <input name="file" type="file" accept="application/pdf/*"></input>
-            </label>
-            <button>Hochladen</button>
-            <div th:if="${message != null }">
-                <p th:text="${message}" />
-            </div>
-        </form>
+    <div th:if="${message != null }" class="w3-container" style="padding-top:22px">
+        <h3 th:text="${aktenzeichen}"></h3>
+        <p th:text="${message}" />
+    </div>
+    <div th:if="${message == null }" class="w3-container" style="padding-top:22px">
+        <h3 th:text="${aktenzeichen}"></h3>
+        <p th:text="'Aktenzeichen: ' + ${aktenzeichen}" />
+        <p th:text="'Datum: ' + ${datum}" />
+        <p th:text="'Typ: ' + ${typ}" />
+        <pre style="white-space: pre-wrap;" th:text="${text}"></pre>
+
     </div>
 
-    <div class="w3-container w3-section">
-        <div class="w3-row-padding" style="margin:0 -16px">
-            <div th:if="${filename != null }" class="w3-twothird">
-                <h5>Graph</h5>
-                <div>
-                    <a th:href="'/graph?filename=' + ${filename}">Show Graph</a>
-                </div>
-            </div>
-            <div class="w3-third">
-            </div>
-        </div>
-    </div>
     <hr></hr>
 
     <!-- Footer -->

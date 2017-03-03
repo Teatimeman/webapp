@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import webapp.converter.ConverterRunnable;
-import webapp.models.Dokument;
+import webapp.importer.ImportRunnable;
 import webapp.models.DokumentDao;
 import webapp.models.MetadataDao;
 import webapp.models.ZitatDao;
@@ -21,48 +20,33 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Created by Bobby on 23.02.2017.
+ * Created by tim on 28.02.2017.
  */
 @Controller
-public class UploadController {
+public class ImportController {
 
-    // ------------------------
-    // PRIVATE FIELDS
-    // ------------------------
-
-    @Autowired
-    private DokumentDao dokumentDao;
+    //Save the uploaded file to this folder
+    private static String UPLOADED_FOLDER = System.getProperty("user.home")+"\\Desktop\\Webapp\\Import\\";
 
     @Autowired
     private MetadataDao metadataDao;
 
     @Autowired
+    private DokumentDao dokumentDao;
+
+    @Autowired
     private ZitatDao zitatDao;
 
-    //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = System.getProperty("user.home")+"\\Desktop\\Webapp\\Upload\\";
-
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/import", method = RequestMethod.POST)
     public String singleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes, Model model) {
-
         if (file.isEmpty()) {
-            model.addAttribute("message","Upload fehlgeschlagen!");
-            return "upload";
+            model.addAttribute("messsage","Fehlgeschlagen!");
+            return "import";
         }
 
         try {
             String filename = file.getOriginalFilename();
-            System.out.println(filename);
-
-            Dokument d = dokumentDao.findByDateiname(filename);
-            if(d != null) {
-                model.addAttribute("message", "Datei ist bereits vorhanden!");
-                model.addAttribute("filename", filename);
-                return "upload";
-            }
-
-            model.addAttribute("filename", filename);
 
             File f = new File(UPLOADED_FOLDER + filename);
             f.getParentFile().mkdirs();
@@ -72,19 +56,20 @@ public class UploadController {
 
             Files.write(path, bytes);
 
-            Thread t = new Thread(new ConverterRunnable(filename, f.getPath(), metadataDao, dokumentDao, zitatDao));
-            t.start();
+            Thread t = new Thread(new ImportRunnable(f.getPath(), metadataDao, dokumentDao, zitatDao));
+            t.run();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return "upload";
+        model.addAttribute("message", "Import erfolgreich!");
+        return "import";
     }
 
-    @RequestMapping(value = "/upload")
+    @RequestMapping(value = "/import")
     public String index(Model model) {
-        return "upload";
+        return "import";
     }
 
 }

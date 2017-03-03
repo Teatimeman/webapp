@@ -19,6 +19,13 @@ public interface MetadataDao extends CrudRepository<Metadata, String> {
     public Metadata findByAktenzeichen(String aktenzeichen);
 
     /**
+     * Gibt die Metadaten passend zum Aktenzeichen einer Entscheidung zurück.
+     *
+     * @param aktenzeichen das aktenzeichen einer Entscheidung.
+     */
+    public List<Metadata> findByAktenzeichenStartingWith(String aktenzeichen);
+
+    /**
      * Gibt alle Metadaten passend zum Datum einer Entscheidung zurück.
      *
      * @param datum das Datum einer Entscheidung.
@@ -31,5 +38,12 @@ public interface MetadataDao extends CrudRepository<Metadata, String> {
      * @param typ der Typ einer Entscheidung.
      */
     public List<Metadata> findByTyp(String typ);
+
+    /**
+     * Gibt alle Metadaten passend zum Datum und Typ einer Entscheidung zurück.
+     *
+     * @param typ der Typ einer Entscheidung.
+     */
+    public List<Metadata> findByDatumAndTyp(String datum, String typ);
 
 } // class UserDao

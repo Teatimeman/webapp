@@ -24,11 +24,9 @@ public class Metadata {
 
     // Das Aktenzeichen von einem Beschluss
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String aktenzeichen;
 
     // Das Datum an von einem Beschluss
-    @NotNull
     private String datum;
 
     // Der Typ eines Beschluss
@@ -46,6 +44,12 @@ public class Metadata {
     }
 
     public Metadata(String datum, String typ) {
+        this.datum = datum;
+        this.typ = typ;
+    }
+
+    public Metadata(String aktenzeichen, String datum, String typ) {
+        this.aktenzeichen = aktenzeichen;
         this.datum = datum;
         this.typ = typ;
     }
@@ -74,4 +78,13 @@ public class Metadata {
         this.typ = value;
     }
 
-} // class User
+    @Override
+    public boolean equals(Object other){
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof Metadata)) return false;
+        Metadata otherMetadata = (Metadata) other;
+        return (this.aktenzeichen.equals(otherMetadata.getAktenzeichen()));
+    }
+
+} // class Metadata
